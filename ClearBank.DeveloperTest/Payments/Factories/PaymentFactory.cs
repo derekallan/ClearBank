@@ -1,5 +1,6 @@
 using System;
-using ClearBank.DeveloperTest.Payments.Domain.PaymentMethods;
+using System.Collections.Generic;
+using System.Linq;
 using ClearBank.DeveloperTest.Payments.Interfaces;
 using ClearBank.DeveloperTest.Types;
 
@@ -7,14 +8,18 @@ namespace ClearBank.DeveloperTest.Payments.Factories;
 
 public class PaymentFactory : IPaymentFactory
 {
+    private Dictionary<PaymentScheme, IPaymentMethod> _paymentMethods;
+
+    public PaymentFactory(IEnumerable<IPaymentMethod> paymentMethods)
+    {
+        _paymentMethods = paymentMethods.ToDictionary(x => x.SupportedScheme);
+    }
     public IPaymentMethod Create(PaymentScheme paymentType)
     {
-        return paymentType switch
+        if (_paymentMethods.ContainsKey(paymentType))
         {
-            PaymentScheme.Bacs => new BacsPayment(),
-            PaymentScheme.Chaps => new ChapsPayment(),
-            PaymentScheme.FasterPayments => new FasterPayment(),
-            _ => throw new ArgumentException("Invalid payment type"),
-        };
+            return _paymentMethods[paymentType];
+        }
+        throw new ArgumentException($"Payment type {paymentType} is not supported");
     }
 }

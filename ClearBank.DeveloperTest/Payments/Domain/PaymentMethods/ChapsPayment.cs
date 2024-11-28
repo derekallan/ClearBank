@@ -7,6 +7,8 @@ namespace ClearBank.DeveloperTest.Payments.Domain.PaymentMethods;
 
 public class ChapsPayment : IPaymentMethod
 {
+    public PaymentScheme SupportedScheme => PaymentScheme.Chaps;
+
     public void ApplyPaymentToAccount(MakePaymentRequest request, Account account)
     {
         account.Balance -= request.Amount;

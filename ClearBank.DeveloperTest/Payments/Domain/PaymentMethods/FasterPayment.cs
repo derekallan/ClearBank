@@ -7,6 +7,8 @@ namespace ClearBank.DeveloperTest.Payments.Domain.PaymentMethods;
 
 public class FasterPayment : IPaymentMethod
 {
+    public PaymentScheme SupportedScheme => PaymentScheme.FasterPayments;
+
     public void ApplyPaymentToAccount(MakePaymentRequest request, Account account)
     {
         account.Balance -= request.Amount;

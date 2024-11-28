@@ -43,11 +43,15 @@ public class PaymentServiceTests
         Assert.False(result.Success);
     }
 
-    [Fact]
-    public void MakePayment_ShouldUpdateAccountAndApplyPayment_WhenValidationResultIsSuccessful()
+    [Theory]
+    [InlineData(100, 50)]
+    public void MakePayment_ShouldUpdateAccountAndApplyPayment_WhenValidationResultIsSuccessful(decimal accountBalance, decimal requestAmount)
     {
         SetupAccountDataStoreFactory();
-        var account = new Account();
+        var account = new Account
+        {
+            Balance = accountBalance
+        };
         _accountDataStoreMock.Setup(x => x.GetAccount(It.IsAny<string>())).Returns(account);
         SetupPaymentFactory();
         _paymentMethodMock.Setup(x => x.ValidateRequestForAccount(It.IsAny<MakePaymentRequest>(), It.IsAny<Account>())).Returns(MakePaymentResult.Ok());
@@ -68,6 +72,7 @@ public class PaymentServiceTests
         var result = _sut.MakePayment(request);
         Assert.True(result.Success);
     }
+
     private void SetupAccountDataStoreFactory()
     {
         _accountDataStoreFactory.Setup(x => x.Create()).Returns(_accountDataStoreMock.Object);

@@ -7,6 +7,8 @@ namespace ClearBank.DeveloperTest.Payments.Domain.PaymentMethods;
 
 public class BacsPayment : IPaymentMethod
 {
+    public PaymentScheme SupportedScheme => PaymentScheme.Bacs;
+
     public void ApplyPaymentToAccount(MakePaymentRequest request, Account account)
     {
         account.Balance -= request.Amount;
